@@ -1,33 +1,65 @@
----
-<h3 align="center">DISCORD SERVER CLONER 1.0</h3>
-<div align="center">
-<img src="https://i.imgur.com/UtsfcRU.png" />
-</div>
-<p align="center">Clone any Discord server easily — copy roles, channels, categories, emojis, and settings with one click.</p>
+🚀 Discord Server Cloner 1.0
+
+<p align="center">
+  <img src="https://i.imgur.com/UtsfcRU.png" width="600"/>
+</p>
+
+<p align="center">
+A Python-based tool designed to replicate Discord server structures quickly and efficiently.
+</p>
+
 ---
 
-## 💾 Installation:
+## ✨ Features
+- Copy server roles
+- Clone channels & categories
+- Duplicate emojis
+- Preserve server structure
+- Simple interactive interface
+
+---
+
+## 📦 Installation
 
 ```bash
 pip install -r requirements.txt
 ```
 
-## 🚀 Usage:
+## 🚀 Usage
 
-1. Run the script:
 ```bash
 python main.py
 ```
-2. Enter your **Discord token** when prompted.
-3. Toggle which settings to copy (roles, channels, categories, emojis).
-4. Enter the **target server ID** (server you want to overwrite).
-5. Enter the **source server ID** (server you want to copy from).
-6. Wait for the cloning to complete.
 
-![Screenshot](https://i.imgur.com/pwMGpOj.png)
+**Steps:**
+1. Run the script
+2. Provide required authentication when prompted
+3. Select what to clone (roles, channels, categories, emojis)
+4. Enter source server ID
+5. Enter target server ID
+6. Wait for completion
 
-**11/06/2026.**
+---
 
-## 🙏 Credits:
+## 🖼 Preview
 
-Made by: **dz9.h**
+<img src="https://i.imgur.com/pwMGpOj.png" width="600"/>
+
+---
+
+## ⚠️ Disclaimer
+
+This project is for **educational and testing purposes only**.  
+The developer is not responsible for any misuse of this tool.
+
+---
+
+## 👤 Author
+
+Made with ❤️ by **dz9.h**
+
+---
+
+## 📌 Notes
+- Ensure you have proper permissions on both servers before using the tool
+- Use responsibly and respect platform rules
