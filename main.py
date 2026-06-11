@@ -1,0 +1,141 @@
+import subprocess
+import os
+import sys
+import json
+import time
+from time import sleep
+
+# Auto-install requirements if not installed
+try:
+  import discord
+  from rich.prompt import Prompt, Confirm
+except ImportError:
+  print("Installing Requirements...")
+  subprocess.check_call(
+    [sys.executable, "-m", "pip", "install", "-r", "requirements.txt"])
+  print("Requirements Installed!")
+  import discord
+  from rich.prompt import Prompt, Confirm
+
+from core.cloner import Cloner
+from core.panel import Panel, Panel_Run
+
+try:
+  client = discord.Client()
+except Exception as e:
+  print("> Failed to create Discord client: ", e)
+  input("\nPress Enter to exit...")
+  sys.exit(1)
+
+with open("./core/config.json", "r") as json_file:
+  data = json.load(json_file)
+
+os.system('cls' if os.name == 'nt' else 'clear')
+
+
+def clear(option=False):
+  sleep(1)
+  os.system('cls' if os.name == 'nt' else 'clear')
+  if option:
+    user = client.user
+    guild = client.get_guild(int(INPUT_GUILD_ID))
+    Panel_Run(guild, user)
+  else:
+    Panel()
+
+
+async def clone_server():
+    start_time = time.time()
+    guild_from = client.get_guild(int(INPUT_GUILD_ID))
+    print(" ")
+    guild_to = client.get_guild(int(GUILD))
+
+    await Cloner.guild_create(guild_to, guild_from)
+
+    await Cloner.channels_delete(guild_to)
+    if data["copy_settings"]["roles"]:
+        await Cloner.roles_create(guild_to, guild_from)
+    if data["copy_settings"]["categories"]:
+        await Cloner.categories_create(guild_to, guild_from)
+    if data["copy_settings"]["channels"]:
+        await Cloner.channels_create(guild_to, guild_from)
+    if data["copy_settings"]["emojis"]:
+        await Cloner.emojis_create(guild_to, guild_from)
+    print("\n> Done Cloning Server in " +
+          str(round(time.time() - start_time, 2)) + " seconds")
+
+
+@client.event
+async def on_ready():
+  clear(True)
+  await clone_server()
+
+
+class ClonerBot:
+
+  def __init__(self):
+    self.INPUT_GUILD_ID = None
+    with open("./core/config.json", "r") as json_file:
+      self.data = json.load(json_file)
+
+  def clear(self):
+    sleep(1)
+    os.system('cls' if os.name == 'nt' else 'clear')
+    Panel()
+
+  def edit_config(self, option, value, copy_settings=False):
+    if copy_settings:
+      self.data["copy_settings"][option] = value
+    else:
+      self.data[option] = value
+    with open("./core/config.json", "w") as json_file:
+      json.dump(self.data, json_file, indent=4)
+
+  def edit_settings_function(self):
+    print("\nDo you want to copy:")
+    categories = Confirm.ask("> Categories?")
+    channels = Confirm.ask("> Channels?")
+    roles = Confirm.ask("> Roles?")
+    emojis = Confirm.ask("> Emojis?")
+    for option in ["categories", "channels", "roles", "emojis"]:
+      self.edit_config(option, locals()[option], copy_settings=True)
+
+  def main(self):
+    self.clear()
+    if self.data["token"] == False:
+      self.TOKEN = Prompt.ask("\n> Enter your Token")
+      sleep(0.5)
+    else:
+      print("> Token Found")
+    self.clear()
+    edit_settings = Confirm.ask("\n> Do you want to edit the settings?")
+    self.clear()
+    if edit_settings:
+      self.edit_settings_function()
+    self.clear()
+
+    self.GUILD = Prompt.ask('\n> Enter the Server ID you want to edit (Create a Server Manully)')
+    while not self.GUILD.isdigit():
+      self.GUILD = Prompt.ask('\n> Invalid ID. Enter the Server ID you want to edit')
+    sleep(0.5)
+
+    self.INPUT_GUILD_ID = Prompt.ask("\n> Enter the Server ID you want to copy from")
+    while not self.INPUT_GUILD_ID.isdigit():
+      self.INPUT_GUILD_ID = Prompt.ask('\n> Invalid ID. Enter the Server ID you want to copy from')
+    sleep(0.5)
+
+    return self.INPUT_GUILD_ID, self.TOKEN, self.GUILD
+
+
+if __name__ == "__main__":
+  try:
+    INPUT_GUILD_ID, TOKEN, GUILD = ClonerBot().main()
+    try:
+      client.run(TOKEN)
+    except Exception as e:
+      print(e)
+      print("> Invalid Token")
+      data["token"] = False
+  except Exception as e:
+    print(f"\n> Error: {e}")
+  input("\nPress Enter to exit...")

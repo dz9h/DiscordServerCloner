@@ -1,0 +1,5 @@
+discord.py-self>=2.0.0
+colorama
+psutil
+pypresence>=4.3.0
+rich>=13.0.0
